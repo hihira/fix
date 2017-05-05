@@ -6,6 +6,7 @@ import quickfix.*;
 import quickfix.field.*;
 import quickfix.fix44.MarketDataRequest;
 import quickfix.fix44.News;
+import quickfix.fix44.Reject;
 
 /**
  * Created by hhr on 2016/09/10.
@@ -57,7 +58,7 @@ public class FixApplication extends MessageCracker implements Application {
 
     public void toAdmin(Message message, SessionID sessionID) {
         logger.warn("■■■toAdmin : SessionID=" + sessionID.toString());
-        logger.warn("^^^toAdmin : message=" + message.toString());
+        logger.warn("^^^toAdmin : message=" + message.toString().replace('\u0001', ' '));
 
         MsgType msgType = new MsgType();
         StringField field = null;
@@ -87,17 +88,27 @@ public class FixApplication extends MessageCracker implements Application {
 
     public void fromAdmin(Message message, SessionID sessionID) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon {
         logger.warn("■■■fromAdmin : SessionID=" + sessionID.toString());
-        logger.warn("^^^fromAdmin : message=" + message.toString());
+        logger.warn("^^^fromAdmin : message=" + message.toString().replace('\u0001', ' '));
+
+        try {
+            crack(message, sessionID);
+        } catch (UnsupportedMessageType unsupportedMessageType) {
+            unsupportedMessageType.printStackTrace();
+        } catch (FieldNotFound fieldNotFound) {
+            fieldNotFound.printStackTrace();
+        } catch (IncorrectTagValue incorrectTagValue) {
+            incorrectTagValue.printStackTrace();
+        }
     }
 
     public void toApp(Message message, SessionID sessionID) throws DoNotSend {
         logger.warn("■■■toApp : SessionID=" + sessionID.toString());
-        logger.warn("^^^toApp : message=" + message.toString());
+        logger.warn("^^^toApp : message=" + message.toString().replace('\u0001', ' '));
     }
 
     public void fromApp(Message message, SessionID sessionID) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType {
         logger.warn("■■■fromApp : SessionID=" + sessionID.toString());
-        logger.warn("^^^fromApp : message=" + message.toString());
+        logger.warn("^^^fromApp : message=" + message.toString().replace('\u0001', ' '));
 
         try {
             crack(message, sessionID);
@@ -112,7 +123,7 @@ public class FixApplication extends MessageCracker implements Application {
 
     public void onMessage(quickfix.fix44.News message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
         logger.warn("■■■onMessage : SessionID=" + sessionID.toString());
-        logger.warn("^^^onMessage : message=" + message.toString());
+        logger.warn("^^^onMessage : message=" + message.toString().replace('\u0001', ' '));
 
         LinesOfText linesOfText = new LinesOfText();
         message.get(linesOfText);
@@ -128,5 +139,32 @@ public class FixApplication extends MessageCracker implements Application {
         // TODO: なんか開発環境が変。getGroupできない
         String messageString = message.getString(58);
         logger.info(messageString);
+    }
+
+    public void onMessage(quickfix.fix44.Reject message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
+        logger.warn("■■■onMessage : SessionID=" + sessionID.toString());
+        logger.warn("^^^onMessage : message=" + message.toString().replace('\u0001', ' '));
+
+        RefSeqNum refSeqNum = new RefSeqNum();
+        RefTagID refTagID = new RefTagID();
+        RefMsgType refMsgType = new RefMsgType();
+        SessionRejectReason rejectReason = new SessionRejectReason();
+        Text text = new Text();
+        message.get(refSeqNum);
+        try {
+            message.get(refTagID);
+            message.get(refMsgType);
+            message.get(rejectReason);
+            message.get(text);
+        } catch (FieldNotFound fieldNotFound) {
+            fieldNotFound.printStackTrace();
+        }
+
+        logger.error("Rejected. RefSeqNum={} RefTagID={} RefMsgType={} SessionReject Reason={} Text={}",
+                refSeqNum.getValue(), refTagID.getValue(), refMsgType.getValue(), rejectReason.getValue(), text.getValue());
+    }
+
+    public void onMessage() throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
+
     }
 }
