@@ -43,6 +43,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-### my settings
-# Maven library
-lib/
+# Maven
+target/
+dependency-reduced-pom.xml
