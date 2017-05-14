@@ -162,6 +162,10 @@ public class FixApplication extends MessageCracker implements Application {
                 refSeqNum.getValue(), refTagID.getValue(), refMsgType.getValue(), rejectReason.getValue(), text.getValue());
     }
 
+    public void onMessage(quickfix.fix44.Heartbeat message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
+        logger.info("Receive Heartbeat.");
+    }
+
     public void onMessage(quickfix.fix44.MarketDataSnapshotFullRefresh message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
         logger.warn("^^^onMessage : message type=" + message.getClass().toString());
 
