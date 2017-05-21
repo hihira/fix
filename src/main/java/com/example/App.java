@@ -4,6 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import quickfix.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /**
  * Hello world!
  *
@@ -29,19 +33,31 @@ public class App
         DefaultMessageFactory messageFactory = new DefaultMessageFactory();
 
         final SocketInitiator initiator = new SocketInitiator(application, messageStoreFactory, settings, logFactory, messageFactory);
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
         initiator.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                initiator.stop();
-                logger.warn( "initiator is stopped." );
-            }
-        });
-
+        label:
         while (true) {
-            Thread.sleep(1000L);
+            System.out.println("type #quit to quit");
+            String value = null;
+            try {
+                value = in.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (value != null) {
+                switch (value) {
+                    case "#quit":
+                        break label;
+                    default:
+                        System.out.println("");
+                        break;
+                }
+            }
         }
+
+        initiator.stop();
     }
 }
