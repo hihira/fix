@@ -166,6 +166,10 @@ public class FixApplication extends MessageCracker implements Application {
         logger.info("Receive Heartbeat.");
     }
 
+    public void onMessage(quickfix.fix44.TestRequest message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
+        logger.info("Receive TestRequest.");
+    }
+
     public void onMessage(quickfix.fix44.MarketDataSnapshotFullRefresh message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
         logger.warn("^^^onMessage : message type=" + message.getClass().toString());
 
