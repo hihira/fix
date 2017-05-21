@@ -1,9 +1,11 @@
 package com.example;
 
+import org.quickfixj.jmx.JmxExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import quickfix.*;
 
+import javax.management.JMException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,6 +33,14 @@ public class App {
         DefaultMessageFactory messageFactory = new DefaultMessageFactory();
 
         final SocketInitiator initiator = new SocketInitiator(application, messageStoreFactory, settings, logFactory, messageFactory);
+
+        JmxExporter exporter = null;
+        try {
+            exporter = new JmxExporter();
+        } catch (JMException e) {
+            e.printStackTrace();
+        }
+        exporter.register(initiator);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
