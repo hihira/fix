@@ -10,20 +10,18 @@ import java.io.InputStreamReader;
 
 /**
  * Hello world!
- *
  */
-public class App 
-{
+public class App {
     static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    public static void main( String[] args ) throws InterruptedException, ConfigError {
+    public static void main(String[] args) throws InterruptedException, ConfigError {
 //        App.class.getResourceAsStream("hoge");
 
         if (args.length != 1) return;
 
         String fileName = args[0];
 
-        logger.warn( "file name is ... " + fileName );
+        logger.warn("file name is ... " + fileName);
 
         SessionSettings settings = new SessionSettings(fileName);
         FixApplication application = new FixApplication(settings);
