@@ -185,6 +185,7 @@ public class FixApplication extends MessageCracker implements Application {
         MDEntryDate mdEntryDate = new MDEntryDate();
         MDEntryTime mdEntryTime = new MDEntryTime();
         Text text = new Text();
+        MarketDateEntryPair entryPair = new MarketDateEntryPair();
         for (int i = 1; i <= noMDEntries.getValue(); i++) {
             message.getGroup(i, group);
             group.get(mdEntryType);
@@ -197,17 +198,14 @@ public class FixApplication extends MessageCracker implements Application {
                 logger.error("Notes on market data entry: {}", text.getValue());
             } catch (FieldNotFound e) {}
 
-            Date date = new Date(mdEntryDate.getValue().getTime() + mdEntryTime.getValue().getTime());
-            String price = symbol.getValue();
-            price += " " + date.toString();
-            price += " " + mdEntryPx.getValue();
-            if (mdEntryType.getValue() == MDEntryType.BID) {
-                price += " bit";
-            } else if (mdEntryType.getValue() == MDEntryType.OFFER) {
-                price += " offer";
-            }
-            System.out.println(price);
+            entryPair.setSymbol(symbol);
+            entryPair.setPrice(mdEntryType, mdEntryPx);
+            entryPair.setSize(mdEntrySize);
+            entryPair.setDate(mdEntryDate);
+            entryPair.setTime(mdEntryTime);
         }
+
+        System.out.println(entryPair.toString());
     }
 
     public void onMessage(quickfix.fix44.MarketDataIncrementalRefresh message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
@@ -225,6 +223,7 @@ public class FixApplication extends MessageCracker implements Application {
         MDEntryDate mdEntryDate = new MDEntryDate();
         MDEntryTime mdEntryTime = new MDEntryTime();
         Text text = new Text();
+        MarketDateEntryPair entryPair = new MarketDateEntryPair();
         for (int i = 1; i <= noMDEntries.getValue(); i++) {
             message.getGroup(i, group);
             group.get(symbol);
@@ -239,16 +238,13 @@ public class FixApplication extends MessageCracker implements Application {
                 logger.error("Notes on market data entry: {}", text.getValue());
             } catch (FieldNotFound e) {}
 
-            Date date = new Date(mdEntryDate.getValue().getTime() + mdEntryTime.getValue().getTime());
-            String price = symbol.getValue();
-            price += " " + date.toString();
-            price += " " + mdEntryPx.getValue();
-            if (mdEntryType.getValue() == MDEntryType.BID) {
-                price += " bit";
-            } else if (mdEntryType.getValue() == MDEntryType.OFFER) {
-                price += " offer";
-            }
-            System.out.println(price);
+            entryPair.setSymbol(symbol);
+            entryPair.setPrice(mdEntryType, mdEntryPx);
+            entryPair.setSize(mdEntrySize);
+            entryPair.setDate(mdEntryDate);
+            entryPair.setTime(mdEntryTime);
         }
+
+        System.out.println(entryPair.toString());
     }
 }
