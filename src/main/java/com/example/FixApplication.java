@@ -52,6 +52,7 @@ public class FixApplication extends MessageCracker implements Application {
             Session.sendToTarget(marketDataRequest, sessionID);
             logger.info("Send MarketDataRequest.");
         } catch (SessionNotFound sessionNotFound) {
+            logger.error("Failed to send MarketDataRequest.");
             sessionNotFound.printStackTrace();
         }
     }
@@ -68,6 +69,7 @@ public class FixApplication extends MessageCracker implements Application {
         try {
             field = message.getHeader().getField(msgType);
         } catch (FieldNotFound fieldNotFound) {
+            logger.error("Failed to get message type field.");
             fieldNotFound.printStackTrace();
         }
 
@@ -77,10 +79,9 @@ public class FixApplication extends MessageCracker implements Application {
                 Password password = null;
                 try {
                     password = new Password(settings.getString(sessionID, "Password"));
-                } catch (ConfigError configError) {
-                    configError.printStackTrace();
-                } catch (FieldConvertError fieldConvertError) {
-                    fieldConvertError.printStackTrace();
+                } catch (ConfigError | FieldConvertError error) {
+                    logger.error("Failed to get password.");
+                    error.printStackTrace();
                 }
 
                 message.setField(password);
@@ -151,11 +152,23 @@ public class FixApplication extends MessageCracker implements Application {
         message.get(refSeqNum);
         try {
             message.get(refTagID);
+        } catch (FieldNotFound fieldNotFound) {
+            logger.info("RefTagID field is not set.");
+        }
+        try {
             message.get(refMsgType);
+        } catch (FieldNotFound fieldNotFound) {
+            logger.info("RefMsgType field is not set.");
+        }
+        try {
             message.get(rejectReason);
+        } catch (FieldNotFound fieldNotFound) {
+            logger.info("SessionRejectReason field is not set.");
+        }
+        try {
             message.get(text);
         } catch (FieldNotFound fieldNotFound) {
-            fieldNotFound.printStackTrace();
+            logger.info("Text field is not set.");
         }
 
         logger.error("Rejected. RefSeqNum={} RefTagID={} RefMsgType={} SessionReject Reason={} Text={}",
