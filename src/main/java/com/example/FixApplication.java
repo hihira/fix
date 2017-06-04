@@ -22,11 +22,11 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void onCreate(SessionID sessionID) {
-        logger.warn("■■■onCreate : sid={}", sessionID.toString());
+        logger.info("onCreate : sid={}", sessionID.toString());
     }
 
     public void onLogon(SessionID sessionID) {
-        logger.warn("■■■onLogon : sid={}", sessionID.toString());
+        logger.info("onLogon : sid={}", sessionID.toString());
 
         MarketDataRequest marketDataRequest = new MarketDataRequest(
                 new MDReqID(Long.toString(System.currentTimeMillis())), // とりま、ユニーク値としてUnixタイムスタンプのミリ秒を使用
@@ -58,11 +58,11 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void onLogout(SessionID sessionID) {
-        logger.warn("■■■onLogout : sid={}", sessionID.toString());
+        logger.info("onLogout : sid={}", sessionID.toString());
     }
 
     public void toAdmin(Message message, SessionID sessionID) {
-        logger.warn("■■■toAdmin : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
+        logger.info("toAdmin : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
 
         MsgType msgType = new MsgType();
         StringField field = null;
@@ -91,7 +91,7 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void fromAdmin(Message message, SessionID sessionID) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon {
-        logger.warn("■■■fromAdmin : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
+        logger.info("fromAdmin : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
 
         try {
             crack(message, sessionID);
@@ -105,11 +105,11 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void toApp(Message message, SessionID sessionID) throws DoNotSend {
-        logger.warn("■■■toApp : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
+        logger.info("toApp : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
     }
 
     public void fromApp(Message message, SessionID sessionID) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType {
-        logger.warn("■■■fromApp : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
+        logger.info("fromApp : sid={} : {}", sessionID.toString(), message.toString().replace('\u0001', ' '));
 
         try {
             crack(message, sessionID);
@@ -127,7 +127,7 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void onMessage(quickfix.fix44.News message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
-        logger.warn("^^^onMessage : message type=" + message.getClass().toString());
+        logger.info("onMessage : message type=" + message.getClass().toString());
 
         LinesOfText linesOfText = new LinesOfText();
         message.get(linesOfText);
@@ -142,7 +142,7 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void onMessage(quickfix.fix44.Reject message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
-        logger.warn("^^^onMessage : message type=" + message.getClass().toString());
+        logger.info("onMessage : message type=" + message.getClass().toString());
 
         RefSeqNum refSeqNum = new RefSeqNum();
         RefTagID refTagID = new RefTagID();
@@ -184,7 +184,7 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void onMessage(quickfix.fix44.MarketDataSnapshotFullRefresh message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
-        logger.warn("^^^onMessage : message type=" + message.getClass().toString());
+        logger.info("onMessage : message type=" + message.getClass().toString());
 
         Symbol symbol = new Symbol();
         message.get(symbol);
@@ -222,7 +222,7 @@ public class FixApplication extends MessageCracker implements Application {
     }
 
     public void onMessage(quickfix.fix44.MarketDataIncrementalRefresh message, SessionID sessionID) throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
-        logger.warn("^^^onMessage : message type=" + message.getClass().toString());
+        logger.info("onMessage : message type=" + message.getClass().toString());
 
         NoMDEntries noMDEntries = new NoMDEntries();
         message.get(noMDEntries);
