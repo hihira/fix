@@ -199,6 +199,7 @@ public class FixApplication extends MessageCracker implements Application {
         MDEntryTime mdEntryTime = new MDEntryTime();
         Text text = new Text();
         MarketDateEntryPair entryPair = new MarketDateEntryPair();
+        entryPair.setSymbol(symbol);
         for (int i = 1; i <= noMDEntries.getValue(); i++) {
             message.getGroup(i, group);
             group.get(mdEntryType);
@@ -211,7 +212,6 @@ public class FixApplication extends MessageCracker implements Application {
                 logger.error("Notes on market data entry: {}", text.getValue());
             } catch (FieldNotFound e) {}
 
-            entryPair.setSymbol(symbol);
             entryPair.setPrice(mdEntryType, mdEntryPx);
             entryPair.setSize(mdEntrySize);
             entryPair.setDate(mdEntryDate);
