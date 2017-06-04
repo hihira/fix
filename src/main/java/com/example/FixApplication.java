@@ -3,12 +3,8 @@ package com.example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import quickfix.*;
-import quickfix.Message;
-import quickfix.MessageCracker;
 import quickfix.field.*;
-import quickfix.fix44.*;
-
-import java.util.Date;
+import quickfix.fix44.MarketDataRequest;
 
 /**
  * Created by hhr on 2016/09/10.
@@ -210,7 +206,8 @@ public class FixApplication extends MessageCracker implements Application {
             try {
                 group.get(text);
                 logger.error("Notes on market data entry: {}", text.getValue());
-            } catch (FieldNotFound e) {}
+            } catch (FieldNotFound e) {
+            }
 
             entryPair.setPrice(mdEntryType, mdEntryPx);
             entryPair.setSize(mdEntrySize);
@@ -249,7 +246,8 @@ public class FixApplication extends MessageCracker implements Application {
             try {
                 group.get(text);
                 logger.error("Notes on market data entry: {}", text.getValue());
-            } catch (FieldNotFound e) {}
+            } catch (FieldNotFound e) {
+            }
 
             entryPair.setSymbol(symbol);
             entryPair.setPrice(mdEntryType, mdEntryPx);
