@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import quickfix.*;
 
 import javax.management.JMException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Hello world!
@@ -17,15 +15,22 @@ public class App {
     static final Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws InterruptedException, ConfigError {
-//        App.class.getResourceAsStream("hoge");
+        InputStream inputStream = null;
+        if (args.length == 0) {
+            inputStream = App.class.getResourceAsStream("client.cfg");
+        } else if (args.length == 1) {
+            try {
+                inputStream = new FileInputStream(args[0]);
+            } catch (FileNotFoundException e) {
+            }
+        }
 
-        if (args.length != 1) return;
+        if (inputStream == null) {
+            System.out.println("usage: " + App.class.getName() + " [configFile].");
+            return;
+        }
 
-        String fileName = args[0];
-
-        logger.warn("file name is ... " + fileName);
-
-        SessionSettings settings = new SessionSettings(fileName);
+        SessionSettings settings = new SessionSettings(inputStream);
         FixApplication application = new FixApplication(settings);
         MessageStoreFactory messageStoreFactory = new FileStoreFactory(settings);
         FileLogFactory logFactory = new FileLogFactory(settings);
