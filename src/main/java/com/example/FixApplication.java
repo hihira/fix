@@ -6,6 +6,10 @@ import quickfix.*;
 import quickfix.field.*;
 import quickfix.fix44.MarketDataRequest;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * Created by hhr on 2016/09/10.
  */
@@ -36,13 +40,19 @@ public class FixApplication extends MessageCracker implements Application {
         noMDEntryTypes.set(new MDEntryType(MDEntryType.OFFER));
         marketDataRequest.addGroup(noMDEntryTypes);
 
+        Properties properties = new Properties();
+        try (InputStream inputStream = getClass().getResourceAsStream("application.properties")) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String[] symbols = properties.getProperty("symbols", "USD/JPY").split(",");
         MarketDataRequest.NoRelatedSym noRelatedSym = new MarketDataRequest.NoRelatedSym();
-        Symbol symbol = new Symbol("USD/JPY");
-        noRelatedSym.set(symbol);
-        marketDataRequest.addGroup(noRelatedSym);
-        symbol = new Symbol("EUR/JPY");
-        noRelatedSym.set(symbol);
-        marketDataRequest.addGroup(noRelatedSym);
+        for (String s : symbols) {
+            noRelatedSym.set(new Symbol(s));
+            marketDataRequest.addGroup(noRelatedSym);
+        }
 
         try {
             Session.sendToTarget(marketDataRequest, sessionID);
