@@ -31,7 +31,7 @@ public class App {
         }
 
         SessionSettings settings = new SessionSettings(inputStream);
-        FixApplication application = new FixApplication(settings);
+        FixApplication application = new FixApplication();
         MessageStoreFactory messageStoreFactory = new FileStoreFactory(settings);
         FileLogFactory logFactory = new FileLogFactory(settings);
 

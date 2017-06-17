@@ -15,10 +15,8 @@ import java.util.Properties;
  */
 public class FixApplication extends MessageCracker implements Application {
     final Logger logger = LoggerFactory.getLogger(FixApplication.class);
-    private final SessionSettings settings;
 
-    public FixApplication(SessionSettings settings) {
-        this.settings = settings;
+    public FixApplication() {
     }
 
     public void onCreate(SessionID sessionID) {
@@ -82,14 +80,7 @@ public class FixApplication extends MessageCracker implements Application {
         // Logon <A>の場合、Passwordを付与
         if (field.valueEquals(MsgType.LOGON)) {
             if (sessionID.getBeginString().compareToIgnoreCase("FIX.4.4") == 0 && !message.isSetField(554)) {
-                Password password = null;
-                try {
-                    password = new Password(settings.getString(sessionID, "Password"));
-                } catch (ConfigError | FieldConvertError error) {
-                    logger.error("Failed to get password.");
-                    error.printStackTrace();
-                }
-
+                Password password = new Password(System.getProperty("password", ""));
                 message.setField(password);
                 message.setField(new ResetSeqNumFlag(true)); // OANDAドキュメントで必須とあるので付与
             }
