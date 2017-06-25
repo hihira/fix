@@ -38,16 +38,8 @@ public class FixApplication extends MessageCracker implements Application {
         noMDEntryTypes.set(new MDEntryType(MDEntryType.OFFER));
         marketDataRequest.addGroup(noMDEntryTypes);
 
-        Properties properties = new Properties();
-        try (InputStream inputStream = getClass().getResourceAsStream("application.properties")) {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String[] symbols = properties.getProperty("symbols", "USD/JPY").split(",");
         MarketDataRequest.NoRelatedSym noRelatedSym = new MarketDataRequest.NoRelatedSym();
-        for (String s : symbols) {
+        for (String s : getSymbolStrings()) {
             noRelatedSym.set(new Symbol(s));
             marketDataRequest.addGroup(noRelatedSym);
         }
@@ -258,5 +250,30 @@ public class FixApplication extends MessageCracker implements Application {
         }
 
         System.out.println(entryPair.toString());
+    }
+
+    /**
+     * System PropertyかpropertiesファイルからSubscribeするSymbolを取得する<br>
+     * System Propertyが優先される<br>
+     * どちらにも指定がない場合はUSD/JPYを返却する<br>
+     *
+     * TODO:Symbolをバリデートする
+     *
+     * @return symbols
+     */
+    private String[] getSymbolStrings() {
+        String symbols = System.getProperty("symbols", null);
+        if (symbols != null) {
+            return symbols.split(",");
+        }
+
+        Properties properties = new Properties();
+        try (InputStream inputStream = getClass().getResourceAsStream("application.properties")) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return properties.getProperty("symbols", "USD/JPY").split(",");
     }
 }
