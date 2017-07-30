@@ -1,4 +1,4 @@
-package com.example;
+package io.github.hihira;
 
 import quickfix.field.*;
 

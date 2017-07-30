@@ -1,4 +1,4 @@
-package com.example;
+package io.github.hihira;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

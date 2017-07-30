@@ -1,4 +1,4 @@
-package com.example;
+package io.github.hihira;
 
 import org.quickfixj.jmx.JmxExporter;
 import org.slf4j.Logger;
