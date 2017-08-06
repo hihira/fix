@@ -40,7 +40,10 @@ jobs:
       # run tests!
       - run: mvn package
 
-      - run: mv target/fix*.jar $CIRCLE_ARTIFACTS/
+      - run: mkdir /tmp/artifacts; mv target/fix*.jar /tmp/artifacts/
 
       - store_test_results:
           path: target/surefire-reports
+
+      - store_artifacts:
+          path: /tmp/artifacts
