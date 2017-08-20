@@ -37,8 +37,15 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
+      - add_ssh_keys:
+          fingerprints:
+            - "90:e6:80:71:48:7b:9d:aa:f4:8b:ee:cb:a0:12:aa:b1"
+
+      # FIXME: github-release-pluginがsettings.xmlの環境変数を展開しれくれないのでとりまこれでいいや
+      - run: sed "s/\${env.GITHUB_API_TOKEN}/$GITHUB_API_TOKEN/" .circleci.settings.xml > settings.xml
+
       # run tests!
-      - run: mvn package
+      - run: if [ $CIRCLE_BRANCH = 'master' ]; then git config --global user.email "circleci@circleci.com"; git config --global user.name "circleci"; mvn -s settings.xml release:prepare --batch-mode release:perform ; else mvn package ; fi
 
       - run: mkdir /tmp/artifacts; mv target/fix*.jar /tmp/artifacts/
 

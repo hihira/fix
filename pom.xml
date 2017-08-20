@@ -83,6 +83,7 @@
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
           <scmCommentPrefix>'[maven-release-plugin][ci skip] '</scmCommentPrefix>
+          <arguments>-Dgithub.draft=true</arguments>
         </configuration>
       </plugin>
       <plugin>
