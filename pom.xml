@@ -3,7 +3,7 @@
 
   <groupId>io.github.hihira</groupId>
   <artifactId>fix</artifactId>
-  <version>1.4</version>
+  <version>1.5-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>fix</name>
@@ -11,7 +11,7 @@
 
   <scm>
     <connection>scm:git:git@github.com:hihira/fix.git</connection>
-    <tag>v1.4</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
